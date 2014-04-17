@@ -25,7 +25,6 @@ var path = require('path'),
     shjs = require('shelljs'),
     zip = require('adm-zip'),
     check_reqs = require('./check_reqs'),
-    manifestUtil = require('./manifestUtil'),
     buildDirInMerge ='build--release';
 
 function hasCustomReleaseArtifactsDir() {
@@ -107,7 +106,6 @@ exports.buildProject = function(buildTarget){
     }
 
     clean.cleanProject(); // remove old build result
-    manifestUtil.updateManifestPermissions('platforms/firefoxos/');
 
     // if 'debug' (default), remove files we only need for 'release'
     if(buildTarget == 'debug') {
