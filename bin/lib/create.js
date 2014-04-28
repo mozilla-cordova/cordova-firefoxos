@@ -27,7 +27,7 @@ var fs = require('fs'),
     check_reqs = require('./check_reqs');
 
 
-exports.createProject = function(project_path,package_name,project_name){
+exports.createProject = function(project_path, package_name, project_name){
     var VERSION = fs.readFileSync(path.join(ROOT, 'VERSION'), 'utf-8');
     
     // Set default values for path, package and name
@@ -43,31 +43,26 @@ exports.createProject = function(project_path,package_name,project_name){
     
     // Check that requirements are met and proper targets are installed
     if(!check_reqs.run()) {
-        console.error('Please make sure you meeet the software requirements in order to build an firefoxos cordova project');
+        console.error('Please make sure you meet the software requirements in order to build an firefoxos cordova project');
         process.exit(2);
     }
     
-    console.log('Creating Firefox OS project');
-    console.log('Project Path '+ path.relative(process.cwd(),project_path));
-    console.log('Package Name '+ package_name);
-    console.log('Project Name '+ project_name);
+    console.log('   Project Path '+ path.relative(process.cwd(),project_path));
+    console.log('   Package Name '+ package_name);
+    console.log('   Project Name '+ project_name);
 
     //copy template folder
-    shjs.cp('-r', path.join(ROOT, 'bin', 'templates', 'project', 'www'), project_path);
-
-    //copy check_reqs file ,creat bin/lib if it does not exist yet
-    if(!fs.existsSync(path.join(project_path,'cordova', 'lib'))) {
-        shjs.mkdir('-p', path.join(project_path,'cordova', 'lib'));
-    }
+    shjs.cp('-r', path.join(ROOT, 'bin', 'templates', 'project', 'platform_www'), project_path);
 
     shjs.cp('-r', path.join(ROOT, 'node_modules'), path.join(project_path,'cordova'));
-    shjs.cp( path.join(ROOT, 'bin', 'lib', 'check_reqs.js'), path.join(project_path,'cordova', 'lib'));
-    
+
     //copy cordova js file
     shjs.cp('-r', path.join(ROOT, 'cordova-lib', 'cordova.js'), path.join(project_path,'www'));
 
     //copy cordova folder
-    shjs.cp('-r', path.join(ROOT, 'bin', 'templates', 'project', 'cordova'), project_path); 
+    shjs.cp('-r', path.join(ROOT, 'bin', 'templates', 'project', 'cordova'), project_path);
+    shjs.cp(path.join(ROOT, 'bin', 'lib', 'check_reqs.js'), path.join(project_path,'cordova', 'lib'));
+
     [
         'run',
         'build',
@@ -76,4 +71,6 @@ exports.createProject = function(project_path,package_name,project_name){
     ].forEach(function(f) { 
          shjs.chmod(755, path.join(project_path, 'cordova', f));
     });
+
+    console.log('Firefox OS project successfully created.');
 }
